@@ -1,4 +1,4 @@
-// A tiny stack VM for make.fun's ISA v1. S holds each opcode's (pops*4+pushes)+97, '.' for no opcode.
+// make.fun tiny stack ISA v1. S[op]-97 = pops*4+pushes; '.' = no opcode.
 import{mkdirSync as m,readdirSync as r,readFileSync as f,writeFileSync as w}from'node:fs'
 const I=process.env.MAKEFUN_INPUT_DIR??'/input',O=process.env.MAKEFUN_OUTPUT_DIR??'/output',
 S='abbegklp........jjjjjjjfjjjfjjj.jjj.............aeeaa...........fi..............eebe',
@@ -9,7 +9,7 @@ let n=p.length,pc=0,s=0,sp=0,cs=0,ip=0,o,c,k,a,b,t
 M.fill(0);L=0
 for(;;){
 if(s==1e6)return 10
-if(pc<0||pc>=n)return 9
+if(pc>>>0>=n)return 9
 o=p[pc];c=S.charCodeAt(o)-97
 if(!(c>=0))return 5
 k=o==1?1:o==2?4:o>>2==12?2:0
@@ -42,5 +42,5 @@ case 80:t=''+D[--sp];if(L+t.length>65536)return 11;for(k=0;k<t.length;)B[L++]=t.
 case 81:if(L>65535)return 11;B[L++]=D[--sp];break
 case 82:D[sp++]=ip<q.length?q[ip++]:-1;break
 case 83:return D[--sp]&255}}}
-for(const d of r(I)){const e=X(f(I+'/'+d+'/program.bin'),f(I+'/'+d+'/input.bin')),g=O+'/'+d
+for(const d of r(I)){const h=I+'/'+d+'/',e=X(f(h+'program.bin'),f(h+'input.bin')),g=O+'/'+d
 m(g,{recursive:true});w(g+'/stdout.bin',B.subarray(0,L));w(g+'/exit.txt',e+'\n')}
